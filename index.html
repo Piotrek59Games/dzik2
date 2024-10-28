@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>DZIK</title>
+</head>
+<body>
+    <header>
+        <div class="header-title"><img src="img/DZIK/a_explodingdzik.png" class="logo-small"><h1>DZIK</h1></div>
+        <div class="navbar">
+            <button onclick="window.location.href=`index.html`">tutorial</button>
+            <button onclick="window.location.href=`game.html`">game</button>
+            <button onclick="window.location.href=`scoretable.html`">score table</button>
+            <button onclick="window.location.href=`dziks.html`">dziks</button>
+        </div>
+    </header>
+    <footer>
+        Copyright ©️ by Bartsz Olichwier 2tc
+    </footer>
+
+    <div id="slide-container">
+    <div id="slider">
+    <div class="card">
+        <h3>Oto Dzik Lesław.</h3>
+        <img src="img/DZIK/a_sigmadzik.png" alt="Dzik Lesław">
+    </div>
+    <div class="card">
+        <h3>To też Dzik Lesław.</h3>
+        <h4>ale skupmy się na tym pierwszym.</h4>
+        <img src="img/leslawdzik.jpg" alt="Lesław Dzik - influencer">
+    </div>
+    <div class="card">
+        <h3>Dzik Lesław ma problem.</h3>
+        <img src="img/DZIK/w_saddzik.png" alt="Dzik Lesław">
+    </div>
+    <div class="card">
+        <h3>Nie może znaleźć swoich ulubionych żołędzi...</h3>
+        <img src="img/acorn.png" alt="zoladz">
+    </div>
+    <div class="card">
+        <h3>Ale znalazł na nie awawansowany wzór matematyczny.</h3>
+        <img src="img/fodx.webp" alt="Dzik Lesław">
+    </div>
+    <div class="card">
+        <h3>Żołędzie tego gatunku to te, których kolejność znalezienia +1 <b>jest podzielna przez 7 lub zawiera 7</b></h3>
+        <img src="img/fodx.webp" alt="Dzik Lesław">
+    </div>
+    <div class="card">
+        <h3>Lesław będzie podawał Ci liczby, a ty bedziesz sprawdzać, czy nie są powiązane z 7</h3>
+        <img src="img/okemoji.jpg" alt="Dzik Lesław">
+    </div>
+    <div class="card">
+        <h3>Czy pomożesz Lesławowi?</h3>
+        <button onclick="window.location.href=`game.html`">Zagraj</button>
+        <img src="img/DZIK/c_happy1dzik.png" alt="Dzik Lesław">
+    </div>
+    </div>
+    </div>
+    <div id="control-panel">
+        <button onclick="window.location.href=`game.html`">pomiń</button>
+        <button onclick="slide(-1)">Wróć &lt;</button>
+        <button onclick="slide(1)">Dalej &gt;</button>
+    </div>
+
+    <script>
+        let EL_slideContainer = document.getElementById('slider')
+
+        let currentSlide = 0;
+        function slide(direction){
+            currentSlide += direction;
+            console.log(EL_slideContainer.style.transform = `translateX(-${currentSlide*100}%)`);
+            
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowRight') {
+                slide(1);
+            }else if (event.key === 'ArrowLeft') {
+                slide(-1);
+            }
+        });
+
+    </script>
+</body>
+</html>

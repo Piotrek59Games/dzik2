@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>DZIK</title>
+</head>
+<body>
+
+    <div class="video-background">
+        <video autoplay loop muted>
+            <source src="img/background_1mp4.mp4" type="video/mp4">
+            Twoja przeglądarka nie obsługuje tagu wideo.
+        </video>
+    </div>
+
+<header>
+    <div class="header-title"><img src="img/DZIK/a_explodingdzik.png" class="logo-small"><h1>DZIK</h1></div>
+    <div class="navbar">
+        <button onclick="window.location.href=`index.html`">tutorial</button>
+        <button onclick="window.location.href=`game.html`">game</button>
+        <button onclick="window.location.href=`scoretable.html`">score table</button>
+    </div>
+</header>
+<footer>
+    Copyright ©️ by Bartsz Olichwier 2tc
+</footer>
+
+<script src="flowAnimation.js"></script>
+
+    <section id="topbar" class="glass">
+        <div>
+        <span>dobrze</span><span class="number" id="points-correct-span">0</span>
+        <span>źle</span><span class="number" id="points-wrong-span">0</span>
+        <span>dobra passa</span><span class="number" id="streak-correct-span">0</span>
+    </div>
+        <div class="counter"> <!-- counter -->
+            <span class="number" id="counter-span">0</span>
+        </div>
+
+    </section>
+<section id="game">
+    <div class="number-div"> <!-- number -->
+        <span class="number" id="number-span">0</span>
+        <span class="number" id="number-span-2">0</span>
+    </div>
+    <div class="dzikbutton-div"> <!-- DZIK button -->
+        <button id="dzikbutton-btn"><span>DZIK!</span></button>
+    </div>
+    <div class="dzik-div glass"> <!-- DZIK -->
+        <img src="img/DZIK/a_sigmadzik.png" id="dzik-img">
+        <img src="img/fire.gif" id="fire-dzik-img">
+    </div>
+</section>
+
+<div class="fscr-cover" id="defeatscreen">
+    <div id="defeatscreen-container">
+        <img src="img/hog-exploding.gif" id="exploding-dzik-img-fscr">
+        <p>Zniszczyłeś życie Lesławowi.</p>
+        <p>To twoja wina.</p>
+        <p>Popatrz na siebie.</p>
+        <p>No i co zrobieś?</p>
+        <p>Unicestwianie komputera za 3...</p>
+        <p>Unicestwianie komputera za 2...</p>
+        <p>Unicestwianie komputera za 1...</p>
+        <img src="img/bsod.gif" id="bsod-gif">
+    </div>
+</div>
+
+ <script>
+    const dzikSrc = {
+        wrong:["img/DZIK/w_embarrasseddzik.png","img/DZIK/w_saddzik.png","img/DZIK/w_angrydzik.png","img/DZIK/w_wkurdzik.png"],
+        correct:["img/DZIK/c_happy1dzik.png","img/DZIK/c_happy2dzik.png","img/DZIK/c_happy3dzik.png","img/DZIK/c_loving1dzik.png","img/DZIK/c_loving2dzik.png","img/DZIK/c_loving3dzik.png"],
+        additional:["img/DZIK/a_explodingdzik.png","img/DZIK/a_freakydzik.png","img/DZIK/a_sigmadzik.png","img/DZIK/a_sleepingdzik.png"],
+    }
+
+    const EL_btn_dzikbutton = document.querySelector('#dzikbutton-btn');
+    let btnClicked = false;
+    EL_btn_dzikbutton.addEventListener('click', () => {
+        btnClicked = true;
+        execChceck();
+        if(checkCorrect() == 'correct'){
+            reactionTime = Date.now() - reactionTime;
+            if(reactionTime < record_reaction) record_reaction = reactionTime;
+            console.log("record_reaction", record_reaction);
+        }
+    });
+
+    //records
+    let record_pts = 0;
+    let record_streak = 0;
+    let record_reaction = 99999;
+    //achievements not working cuz no time to finish :(((
+    let achievements = [];
+
+    record_pts = localStorage.getItem("record_pts");
+    record_streak = localStorage.getItem("record_streak");
+    record_reaction = localStorage.getItem("record_reaction");
+
+    //current game
+    let ptsCorrect = 0;
+    let ptsWrong = 0;
+    let streakCorrect = 0;
+    let streakWrong = 0;
+
+    let currentNumber = 0;
+    let startTime = 1.5;
+    let reactionTime = 0;
+
+    window.addEventListener("beforeunload", function(e){
+        console.log("!!!!!!!!");
+        setRecords();
+        localStorage.setItem("record_pts", record_pts);
+        localStorage.setItem("record_streak", record_streak);
+        localStorage.setItem("record_reaction", record_reaction);
+    });
+    function setRecords(){
+        if(ptsCorrect > record_pts ) record_pts = ptsCorrect;
+        if(streakCorrect > record_streak ) record_streak = streakCorrect;
+    }
+
+    const EL_span_number = document.querySelector('#number-span');
+    const EL_span_number2 = document.querySelector('#number-span-2');
+    const EL_span_counter = document.querySelector('#counter-span');
+    let currentCounter = startTime*10;
+    function updateCounter() {
+        if(currentCounter > 0){
+            currentCounter--;
+        }else {
+            execChceck();
+            nextNumber();
+            currentCounter = startTime*10;
+        }
+        EL_span_counter.innerHTML = `${currentCounter / 10}`;
+    }
+    let counterInterval = setInterval(updateCounter, 100);
+
+    function nextNumber(){
+        reactionTime = Date.now();
+        btnClicked = false;
+        executed = false;
+        currentNumber++;
+        EL_span_number.innerHTML = currentNumber;
+        EL_span_number2.innerHTML = currentNumber;
+            
+    }
+
+    const EL_div_defeatscreen = document.querySelector('#defeatscreen');
+    const EL_div_defeatscreen_container = document.querySelector('#defeatscreen-container');
+    function stopGame(reason){
+        clearInterval(counterInterval);
+        if(reason == 'defeat'){
+            EL_div_defeatscreen.style.visibility = 'visible';
+            EL_div_defeatscreen_container.classList.add('defeatscreen-animation')
+        }
+        if(reason == 'lvlEnd'){
+            
+        }
+    }
+
+    //
+    let executed = false;
+    function execChceck(){
+        if(executed) return;
+        executed = true;
+        let isCheckCorrect = checkCorrect();
+
+        if(isCheckCorrect == 'correct'){
+            highlightEL('body', 'green');
+            ptsCorrect++;
+            streakWrong = 0;
+            streakCorrect++;
+            
+            updateDzikState('correct');
+            flowAnimation(EL_btn_dzikbutton, EL_img_dzik);
+        }
+        if(isCheckCorrect == 'wrong'){
+            highlightEL('body', 'red');
+            ptsWrong++;
+            streakCorrect = 0;
+            streakWrong++;
+            if(streakWrong > dzikSrc.wrong.length) stopGame('defeat');
+
+            updateDzikState('wrong');
+        }
+        updateUI();
+    }
+    function checkCorrect(){
+        if(isCorrect(currentNumber) ^ btnClicked) return 'wrong';
+        if(isCorrect(currentNumber) && btnClicked) return 'correct';
+        else return 'nothing';
+    /*
+    iscorrect | btnClicked | 
+            0   0           -> nothing
+            1   0           -> wrong
+            0   1           -> wrong
+            1   1           -> correct
+    */
+    }
+
+    function isCorrect(num){
+        num += 1;
+        if(num % 7 == 0 || num.toString().includes('7')) return true;
+        return false;
+    }
+
+    const EL_img_dzik = document.querySelector('#dzik-img');
+    function updateDzikState(isCheckCorrect){
+        let imageSrc;
+    
+        if(Math.random() < 0.05) {
+            imageSrc = dzikSrc.additional[1];
+            return;
+            addAchievement('getting freaky');
+        }
+
+        if (isCheckCorrect === 'correct') {
+            const imageIndex = Math.min(streakCorrect, dzikSrc.correct.length) - 1;
+            imageSrc = dzikSrc.correct[imageIndex];
+        } else if (isCheckCorrect === 'wrong') {
+            const imageIndex = Math.min(streakWrong, dzikSrc.wrong.length) - 1;
+            imageSrc = dzikSrc.wrong[imageIndex];
+        }
+
+        EL_img_dzik.src = imageSrc;
+        animatePop1(EL_img_dzik);
+    }
+
+    const EL_span_pointsCorrect = document.querySelector('#points-correct-span');
+    const EL_span_pointsWrong = document.querySelector('#points-wrong-span');
+    const EL_span_streakCorrect = document.querySelector('#streak-correct-span');
+    const EL_img_firedzik = document.querySelector('#fire-dzik-img');
+    function updateUI(){
+        EL_span_pointsCorrect.innerHTML = ptsCorrect;
+        EL_span_pointsWrong.innerHTML = ptsWrong;
+        EL_span_streakCorrect.innerHTML = streakCorrect;
+        streakCorrect>=10 ? EL_img_firedzik.style.visibility = 'visible' : EL_img_firedzik.style.visibility = 'hidden';
+    }
+    function highlightEL(element, cssvarColor) {
+        const EL = document.querySelector(element);
+
+        EL.style.boxShadow = `0 0 500px inset var(--${cssvarColor})`;
+
+        setTimeout(() => {
+            EL.style.boxShadow = 'none';
+        }, 1000);
+    }
+    function animatePop1(el){
+        el.animate([
+        { transform: 'scale(0.4)' },
+        { transform: 'scale(1.2)' },
+        { transform: 'scale(1.0)' }
+    ], {
+        duration: 500,
+        easing: 'ease-in-out',
+        fill: 'forwards'
+    });
+    }
+
+
+    function addAchievement(){
+        //brak czasu na zaimplementowanie;
+    }
+
+
+ </script>   
+
+
+
+</body>
+</html>

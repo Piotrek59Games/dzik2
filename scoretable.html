@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>DZIK</title>
+</head>
+<body>
+
+    <div class="video-background">
+        <video autoplay loop muted>
+            <source src="img/background_1mp4.mp4" type="video/mp4">
+            Twoja przeglądarka nie obsługuje tagu wideo.
+        </video>
+    </div>
+
+<header>
+    <div class="header-title"><img src="img/DZIK/a_explodingdzik.png" class="logo-small"><h1>DZIK</h1></div>
+    <div class="navbar">
+        <button onclick="window.location.href=`index.html`">tutorial</button>
+        <button onclick="window.location.href=`game.html`">game</button>
+        <button onclick="window.location.href=`scoretable.html`">score table</button>
+    </div>
+</header>
+<footer>
+    Copyright ©️ by Bartszo Olichwier 2tc
+</footer>
+
+
+    <section id="topbar" class="glass">
+        <div>
+        <span>punkty</span><span class="number" id="points-r">0</span>
+        <span>dobra passa</span><span class="number" id="streak-r">0</span>
+        <span>czas reakcji</span><span class="number" id="reaction-r">0</span>
+    </div>
+    </section>
+
+<script>
+    let record_pts = localStorage.getItem("record_pts");
+    let record_streak = localStorage.getItem("record_streak");
+    let record_reaction = localStorage.getItem("record_reaction");
+
+
+    const EL_span_points = document.querySelector('#points-r');
+    const EL_span_streak = document.querySelector('#streak-r');
+    const EL_span_reaction = document.querySelector('#reaction-r');
+    function updateUI(){
+        EL_span_points.innerHTML = record_pts;
+        EL_span_streak.innerHTML = record_streak;
+        EL_span_reaction.innerHTML = record_reaction;
+    }
+    updateUI();
+
+
+ </script>   
+
+
+
+</body>
+</html>
